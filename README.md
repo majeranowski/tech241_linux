@@ -258,6 +258,11 @@ and add at the bottom of the file environmental variable e.g:
 
 After all these steps env variable will be persistent after next time we log in
 
+### IP addressess:
+
+Public IP address (associated VM)
+* static - (default Azure) stays the same even when VM is restarted
+* dynamic - (default AWS) - changes IP every restart of your VM
 
 ### Processes
 
@@ -270,3 +275,65 @@ Process is like a program that loaded to RAM. If your CPU has 1 core basically C
 OS needs to prioritize processes. Which one most important.
 
 PID - process ID (every process has a process ID)
+
+#### How to start and kill the process
+
+`sleep <number of seconds>` - puts terminal to sleep (puts foreground) for certain amount of time
+
+`sleep 5000 &` - puts terminal to sleep for 5000 sec but in the background
+
+`jobs` - lists processes running in the background
+
+`jobs -l` - list of processes with the process ID
+
+`kill -1 <process ID>` - kills the proecss in the most gentle way (signal 1) - hanging up
+
+`kill <process ID>` - kill the process, terminating (signal 15) - it will kill parent process and also child processes
+
+`kill -9 <process ID>` - the harshest way of killing the process. Brute force stubborn process.  (signal 9) - it will kill the parent process but child processes will turn up zombie processes that might still running and taking up the memories
+
+`ps -ef` - shows parent process ID
+
+`sudo systemctl` - way to control system processes
+
+### Sparta test app
+
+* Node js app
+* port 3000
+* 2 features
+  - a front page (no database if we just want to display front page)
+  - posts page that shows some information from database
+
+Requirements to run Sparta app
+* Linux VM - Ubuntu 18.04 LTS
+* web server - nginx
+* right version node js - version 12.x works fine (dependency)
+* app folder
+* in app folder, run 2 commands:
+  - npm install
+  - node app.js or npm start
+
+### getting folder to VM azure
+
+* git clone
+
+    - create a gitrepo - tech241-sparta-app
+    - create a folder "tech241-sparta-app" on your local machine
+    - copy app folder to your local reo
+    - sync with your remote repo on GitHub
+    - SSH into VM & git clone
+
+* scp command
+  
+    - will need the private key
+    - path to folder
+    - adminuser@IP address
+
+`scp -i ~/.ssh/tech241-krzysztof-az-key -r ./app adminuser@40.120.57.73:/home/adminuser/tech241-sparta-app`
+  
+* rsync 
+
+
+
+
+
