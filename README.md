@@ -74,6 +74,12 @@ For example:
 
 * `chmod 327 foldername` will give write and execute (3) permission for the user, w (2) for the group, and read, write, and execute for the users.
 
+### changing owner in linux
+
+`chown new_owner file_or_directory_path`
+
+`chown -R new_owner directory_path` - change owner for the directory and all the files inside
+
 ### Checking the system version
 
 `uname -v` - -v version of the operating system
@@ -333,7 +339,138 @@ Requirements to run Sparta app
   
 * rsync 
 
+### deploying app
+
+```bash 
+sudo apt update -y
+
+sudo apt upgrade -y
+
+# get from url needed version of node
+curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+
+#install nodejs
+sudo apt install -y nodejs
+
+#installing pm2 that helps run apps in the background
+sudo npm install pm2 -g 
+
+#go to the app folder until you see content
+npm install
+
+# get the app going
+npm start # or node app.js
+```
+
+You need to add port 3000 to your VM. add a security rule to VM
+
+On Azure portal it is in 'Networking' tab and then 'Add inbound port rule'
+
+after ctrl + z the app won't start again because it will be keep ocuppying the port 3000
+
+2 services can't use the same port
+
+Use ctrl+c instead 
 
 
+### running db on the VM
+
+create new VM for db
+
+Requirements to get the db running for sparta app:
+
+* Linux VM - Ubuntu 18.04 LTS
+* update and upgrade
+* Install mongo db version 3.2.x (non relational db)
+  - download key for the right version
+  - source list - specify mongo db version
+  - update again
+  - install mongo db
+* configure mongo db to accept connections from app VM 
 
 
+```bash 
+sudo apt update -y
+
+sudo apt upgrade -y
+
+#to download key for the right version (from mongo db website)
+wget -qO - https://www.mongodb.org/static/pgp/server-3.2.asc | sudo apt-key add -
+
+# source list
+echo "deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list
+
+# update again
+sudo apt update -y
+
+# install mongo db
+sudo apt-get install -y mongodb-org=3.2.20 mongodb-org-server=3.2.20 mongodb-org-shell=3.2.20 mongodb-org-mongos=3.2.20 mongodb-org-tools=3.2.20
+
+#configuration
+sudo nano /etc/mongod.conf # in network interfaces we change bindIP to 0.0.0.0 to accept connections from any machines
+
+#start mongod
+sudo systemctl start mongod
+
+#enabling mongod so it will always start
+sudo systemctl enable mongod
+
+```
+
+127.0.0.1 - IP adress of the local host
+
+`sudo systemctl status mongod` - checking if mongodb is running
+
+### script to install and run mongo db
+
+```bash
+#!/bin/bash
+
+# Update and upgrade the system
+sudo apt update
+sudo apt upgrade -y
+
+# Install MongoDB
+sudo apt-get install -y mongodb
+
+# Configure bindIp to 0.0.0.0
+sudo sed -i 's/bindIp: 127.0.0.1/bindIp: 0.0.0.0/g' /etc/mongodb.conf
+
+# Start and enable MongoDB
+sudo systemctl start mongodb
+sudo systemctl enable mongodb
+
+```
+
+### connecting app and db
+
+Requirements to run Sparta app
+* Linux VM - Ubuntu 18.04 LTS
+* web server - nginx
+* right version node js - version 12.x works fine (dependency)
+* get app folder
+* (if we want postpage to work) set DB_HOST env variable
+* in app folder, run 2 commands:
+  - npm install
+  - node app.js or npm start
+
+
+ON THE APP VM:
+
+`export DB_HOST=mongodb://<IP-ADDRESS>:27017/posts`
+
+```bash
+ export DB_HOST=mongodb://20.162.216.138:27017/posts
+
+```
+
+later on npm install and npm run
+
+`http://40.120.57.73:3000/posts` - to access post page
+
+on th DB VM:
+
+* you need to add inboud port security rule from port 27017
+
+
+![adding-security-rule](Screenshot(6).png)
