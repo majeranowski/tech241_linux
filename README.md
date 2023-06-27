@@ -421,26 +421,6 @@ sudo systemctl enable mongod
 
 `sudo systemctl status mongod` - checking if mongodb is running
 
-### script to install and run mongo db
-
-```bash
-#!/bin/bash
-
-# Update and upgrade the system
-sudo apt update
-sudo apt upgrade -y
-
-# Install MongoDB
-sudo apt-get install -y mongodb
-
-# Configure bindIp to 0.0.0.0
-sudo sed -i 's/bindIp: 127.0.0.1/bindIp: 0.0.0.0/g' /etc/mongodb.conf
-
-# Start and enable MongoDB
-sudo systemctl start mongodb
-sudo systemctl enable mongodb
-
-```
 
 ### connecting app and db
 
@@ -474,3 +454,74 @@ on th DB VM:
 
 
 ![adding-security-rule](Screenshot(6).png)
+
+
+## Automation Tasks:
+
+* app VM script:
+
+```bash
+#!/bin/bash
+
+
+# update
+sudo apt update -y
+
+# upgrade
+sudo apt upgrade -y
+# install nginx
+sudo apt install nginx -y
+# restart nginx
+sudo systemctl restart nginx
+# enable nginx
+sudo systemctl enable nginx
+# get from url needed version of node
+curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+# install nodejs
+sudo apt install -y nodejs
+#installing pm2 that helps run apps in the background
+sudo npm install pm2 -g
+# getting app folder to the VM
+git clone https://github.com/majeranowski/tech241-sparta-app.git app3
+#getting inside app folder
+cd app3/app
+#Creating DB_HOST env variable
+export DB_HOST=mongodb://20.162.216.138:27017/posts
+# installing the app
+npm install
+# starting the app
+pm2 -f start app.js
+
+```
+
+* db VM script:
+
+```bash
+#!/bin/bash
+
+# Update and upgrade the system
+sudo apt update -y
+sudo apt upgrade -y
+
+#to download key for the right version (from mongo db website)
+wget -qO - https://www.mongodb.org/static/pgp/server-3.2.asc | sudo apt-key add -
+
+# source list
+echo "deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list
+
+# update again
+sudo apt update -y
+
+# install mongo db
+sudo apt-get install -y mongodb-org=3.2.20 mongodb-org-server=3.2.20 mongodb-org-shell=3.2.20 mongodb-org-mongos=3.2.20 mongodb-org-tools=3.2.20
+
+# Configure bindIp to 0.0.0.0
+sudo sed -i 's/bindIp: 127.0.0.1/bindIp: 0.0.0.0/g' /etc/mongod.conf
+
+# Start Mongo DB
+sudo systemctl start mongod
+
+# Enable Mongo DB
+sudo systemctl enable mongod
+
+```
