@@ -670,3 +670,108 @@ pm2 -f start app.js
 
 
 ```
+
+
+## TROUBLESHOOTING
+
+Whenever your script has worked, just ceck manually the files you were editing etc. to double check if all the necessery changes took place. Sometimes script can execute without an error but actually not do the things we intended to do. 
+
+
+# Blobs
+
+Blob storage is not hierarchial. It is a place where you can 'dump' everything. Whatever you want to put there. It is not organized. This place is like a container.
+
+It is a type of cloud storage service provided by many cloud computing platforms. It is designed to store and manage unstructured data.
+
+In azure if you want to make a container you first need to have a resource group and inside resource group you need to create storage account. 
+
+Redundancy - in case of disaster you can take back up copies. Redundancy is the inclusion of extra components which may be needed if necessery.
+
+Advantages:
+
+* Cost Effective 
+* Scalability
+* Durability and Redundancy
+
+Different tiers:
+
+* Hot Access Tier: The Hot Access Tier is designed for frequently accessed data and provides the highest availability and lowest latency. It offers higher storage costs compared to other tiers but provides optimal performance for applications that require real-time access to data. It is suitable for scenarios like active workloads, streaming, and frequently accessed data sets.
+
+* Cool Access Tier: The Cool Access Tier is optimized for storing data that is accessed less frequently but still requires quick access when needed. It offers lower storage costs compared to the Hot Access Tier but with slightly higher data retrieval costs. The Cool tier is ideal for scenarios like backups, long-term storage, archival data, and disaster recovery.
+
+* Archive Access Tier: The Archive Access Tier is the most cost-effective option and is designed for rarely accessed data with long retention periods. It offers the lowest storage costs but with higher data retrieval costs and longer retrieval times. The Archive tier is suitable for scenarios where data is stored for compliance, regulatory, or legal purposes, and infrequent access is expected.
+
+
+# Types of redundancy
+
+* Locally Redundant Storage (LRS): LRS makes multiple synchronous copies of your data within a single storage scale unit. It ensures high durability and availability within a data center. However, it does not replicate data across multiple data centers, making it susceptible to regional failures.
+
+* Zone-Redundant Storage (ZRS): ZRS replicates data synchronously across three different availability zones within a single region. It provides higher durability and availability than LRS, as it protects against data center failures within a region. ZRS is suitable for applications requiring higher availability but can tolerate short periods of unavailability during zone-wide failures.
+
+* Geo-Redundant Storage (GRS): GRS provides data replication to a secondary region, making it highly durable and available. It synchronously replicates data within an Azure region (like ZRS) and asynchronously replicates the data to a paired region, which is typically located hundreds of miles away. In case of a regional outage, failover to the secondary region can be initiated to access the data.
+
+* Read-Access Geo-Redundant Storage (RA-GRS): RA-GRS offers the same replication capabilities as GRS but additionally allows read access to the replicated data in the secondary region. This enables you to perform read operations on the data even if the primary region is unavailable. RA-GRS is useful for scenarios requiring both high availability and the ability to read data during primary region outages.
+
+* Geo-Zone-Redundant Storage (GZRS): GZRS combines the benefits of ZRS and GRS by synchronously replicating data across three availability zones within the primary region and then asynchronously replicating the data to a secondary region. It offers both high availability within the primary region and the added protection of data replication to a secondary region.
+
+![redundancy_types](p1.png)
+
+
+
+in azure portal
+
+storage accounts -> create - Locally redundant storage
+
+## Difference between blob storage and file systems
+
+Blob storage and file systems, such as the ones used in Linux, Windows, and Mac, are different approaches to storing and organizing data:
+
+* Data organization:
+  - Blob storage: blob storage is a flat storage system where data is organized as a collection of binary large objects (BLOBs). No Hierarchy
+  - File System: Hierarchical, organized data into tree-like structure.
+
+## AZURE CLI (Command Line Interface)
+
+`az  login` - to login
+
+`az storage account create --name tech241krzysztofstorage --resource-group tech241 --location uksouth --sku Standard_LRS` - to create storage account (sku - type of redandancy)
+
+`az storage account list --resource-group tech241` - list all storage accounts in specific resource group
+
+`az storage account list --resource-group tech241 --query "[].{Name:name, Location:location, Kind:kind}" --output table` - list table of all storage accounts organized by name location and kind
+
+`az storage container create \ --account-name tech241krzysztofstorage \ --name testcontainer --auth-mode login` = creating a container ( / - escape character. breaks a command in few lines. they are not necessery)
+
+`az storage blob upload --account-name tech241krzysztofstorage --container-name testcontainer --name newname.txt --file /c/Users/krzyd/test.txt --auth-mode login` - uploading blob to a container
+
+`az storage blob list --account-name tech241krzysztofstorage --container-name testcontainer --output table --auth-mode login` - list the blobs in container
+
+Changing access for a blob:
+
+![storage-account](Screenshot(7).png)
+![storage-account](Screenshot(8).png)
+
+
+## Adding img to sparta app front page
+
+
+Similiar steps as above with some differences:
+
+`curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash` - installing Azure CLI on VM
+
+`curl https://tech241ramonstorage.blob.core.windows.net/catcontainer/uploadedcat.jpg --output newcat.jpg` - downloading cat image from url to the file
+
+`az storage blob upload --account-name tech241krzysztofstorage --container-name testcontainer --name uploadedcat.jpg --file newcat.jpg --auth-mode login` - uploading blob to a container
+
+In app folder we have to enter /views directory and edit index.ejs to add <img> tag with our photo.
+
+
+![sparta-app with img](Screenshot(10).png)
+
+
+
+
+
+
+
+
