@@ -744,6 +744,16 @@ Blob storage and file systems, such as the ones used in Linux, Windows, and Mac,
 
 `az storage blob upload --account-name tech241krzysztofstorage --container-name testcontainer --name newname.txt --file /c/Users/krzyd/test.txt --auth-mode login` - uploading blob to a container
 
+ * To download a blob:
+```bash 
+    az storage blob download \
+    --account-name tech241krzysztofstorage \
+    --container-name testcontainer \
+    --name myFile.txt \
+    --file <~/destination/path/for/file> \
+    --auth-mode login
+```
+
 `az storage blob list --account-name tech241krzysztofstorage --container-name testcontainer --output table --auth-mode login` - list the blobs in container
 
 Changing access for a blob:
