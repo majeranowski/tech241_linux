@@ -302,15 +302,12 @@ PID - process ID (every process has a process ID)
 
 `sudo systemctl` - way to control system processes
 
-### Sparta test app
+# Sparta test app:
 
-* Node js app
-* port 3000
-* 2 features
-  - a front page (no database if we just want to display front page)
-  - posts page that shows some information from database
 
-Requirements to run Sparta app
+
+## Requirements to run Sparta app:
+
 * Linux VM - Ubuntu 18.04 LTS
 * web server - nginx
 * right version node js - version 12.x works fine (dependency)
@@ -319,7 +316,7 @@ Requirements to run Sparta app
   - npm install
   - node app.js or npm start
 
-### getting folder to VM azure
+## getting folder to VM azure
 
 * git clone
 
@@ -329,24 +326,33 @@ Requirements to run Sparta app
     - sync with your remote repo on GitHub
     - SSH into VM & git clone
 
+Command to clone sparta app repo to your VM:
+
+`git clone https://github.com/majeranowski/tech241-sparta-app.git app3`
+
 * scp command
   
     - will need the private key
     - path to folder
     - adminuser@IP address
 
+Command to copy the folder app to your VM:
+
 `scp -i ~/.ssh/tech241-krzysztof-az-key -r ./app adminuser@40.120.57.73:/home/adminuser/tech241-sparta-app`
   
 * rsync 
 
+<mark>The difference betwen scp and git clone: Using scp command you have to do it from your OS command line. With git clone you can be already logged in to your VM.</mark>
+
 ### deploying app
 
 ```bash 
+# updating current packages to the latest of your installed version.
 sudo apt update -y
-
+# upgrading (will install new packages if necessery)
 sudo apt upgrade -y
 
-# get from url needed version of node
+# get from the website needed version of nodejs
 curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 
 #install nodejs
@@ -362,20 +368,22 @@ npm install
 npm start # or node app.js
 ```
 
-You need to add port 3000 to your VM. add a security rule to VM
+You need to add inboud security rule for port 3000 to your VM. 
 
 On Azure portal it is in 'Networking' tab and then 'Add inbound port rule'
 
-after ctrl + z the app won't start again because it will be keep ocuppying the port 3000
+![adding-security-rule](Screenshot(6).png)
 
-2 services can't use the same port
+### Side Notes:
 
-Use ctrl+c instead 
+* after ctrl + z the app won't start again because it will be keep ocuppying the port 3000. Use ctrl+c instead
+
+* 2 services can't use the same port
 
 
-### running db on the VM
+## running db on the VM
 
-create new VM for db
+<mark>create new VM for db
 
 Requirements to get the db running for sparta app:
 
@@ -407,7 +415,7 @@ sudo apt update -y
 sudo apt-get install -y mongodb-org=3.2.20 mongodb-org-server=3.2.20 mongodb-org-shell=3.2.20 mongodb-org-mongos=3.2.20 mongodb-org-tools=3.2.20
 
 #configuration
-sudo nano /etc/mongod.conf # in network interfaces we change bindIP to 0.0.0.0 to accept connections from any machines
+sudo nano /etc/mongod.conf # in network interfaces we change bindIP to 0.0.0.0 to accept connections from any machines. It is not a prefered way because we allow everyone to access it but for the purpose of training it is ok.
 
 #start mongod
 sudo systemctl start mongod
@@ -419,23 +427,29 @@ sudo systemctl enable mongod
 
 127.0.0.1 - IP adress of the local host
 
-`sudo systemctl status mongod` - checking if mongodb is running
+* `sudo systemctl status mongod` - checking if mongodb is running
+
+* `sudo nano /etc/mongod.conf` - after running the script it is a good practise to check manually the config file and see if the bindip was changed.
 
 
-### connecting app and db
+## Connecting app and db: 
 
 Requirements to run Sparta app
 * Linux VM - Ubuntu 18.04 LTS
 * web server - nginx
 * right version node js - version 12.x works fine (dependency)
 * get app folder
-* (if we want postpage to work) set DB_HOST env variable
+* <mark>(if we want postpage to work) set DB_HOST env variable
 * in app folder, run 2 commands:
   - npm install
   - node app.js or npm start
 
 
-ON THE APP VM:
+### ON THE APP VM:
+
+Right before `npm install` step we have to create an enironmental variable that gives us the 'location' of the database we want to get data from.
+
+* Command to create env variable:
 
 `export DB_HOST=mongodb://<IP-ADDRESS>:27017/posts`
 
@@ -444,21 +458,33 @@ ON THE APP VM:
 
 ```
 
-later on npm install and npm run
+after this step, as previously we can navigate to our app folder and:
 
-`http://40.120.57.73:3000/posts` - to access post page
-
-on th DB VM:
-
-* you need to add inboud port security rule from port 27017
+`npm install` and `npm start`
 
 
-![adding-security-rule](Screenshot(6).png)
 
 
-## Automation Tasks:
+### ON THE DB VM:
 
-* app VM script:
+
+
+* you need to add inboud port security rule for port 27017
+
+
+![adding-security-rule](Screenshot(12).png)
+
+If everything ran without errors we can check if our app is connected to the database by entering below link to a web browser:
+
+`http://40.120.57.73:3000/posts` - remember to change the IP address with your app VM public IP.
+
+
+
+# Automation Tasks:
+
+You can automate above processes with 2 scripts provided below. They contain the same commands explained previously. Remember about the specific order. DB script should be ran before APP script.
+
+## App VM script:
 
 ```bash
 #!/bin/bash
@@ -489,12 +515,12 @@ cd app3/app
 export DB_HOST=mongodb://20.162.216.138:27017/posts
 # installing the app
 npm install
-# starting the app
-pm2 -f start app.js
+# starting the app in the background by using pm2 (node process managers)
+pm2 start app.js
 
 ```
 
-* db VM script:
+## db VM script:
 
 ```bash
 #!/bin/bash
@@ -527,7 +553,7 @@ sudo systemctl enable mongod
 ```
 
 
-### Running node app in the background using &
+## Running node app in the background using & and nohup:
 
 ```bash
 nohup node app.js </dev/null &>/dev/null &
@@ -537,15 +563,14 @@ without </dev/null> we would get the message:
 
 `nohup:ignoring input and appending output to 'nohup.out'`
 
-nohup means no hang up - which means that process will be still running even if we log out from the terminal. if we don't mention nohup the user processes will hang up when we exit the terminal.
+* nohup means no hang up - which means that process will be still running even if we log out from the terminal. if we don't mention nohup the user processes will hang up when we exit the terminal.
 
 
-and terminal would be occupied.
 
-ps2 is a better solution because we can force rerunning the app. with nohup keyword port 3000 would be occupied.
+* ps2 is a better solution because we can force rerunning the app. with nohup keyword port 3000 would be occupied.
 
 
-when you run a bash script shell in bash it kind of create subshell. after the script finishes it hang up the subshell and all the user processes withing. to prevent that you need to add nohup.
+* when you run a bash script shell in bash it kind of create subshell. after the script finishes it hang up the subshell and all the user processes withing. to prevent that you need to add nohup.
 
 
 
