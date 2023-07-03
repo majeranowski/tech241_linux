@@ -588,7 +588,7 @@ A proxy, in the context of computer networking, is an intermediary server that a
 
 A reverse proxy is a server or a software application that sits between client devices and web servers. It acts on behalf of the web servers to handle client requests and distribute them to the appropriate backend servers. Unlike a normal proxy, which forwards client requests to remote servers, a reverse proxy accepts requests on behalf of servers and returns the responses to clients.
 
-Here are the key differences between a reverse proxy and a normal proxy:
+## Here are the key differences between a reverse proxy and a normal proxy:
 
 * Direction of communication: A normal proxy acts as an intermediary between a client device and a remote server. It forwards client requests to the server and relays the server's responses back to the client. In contrast, a reverse proxy acts as an intermediary between clients and backend servers. It receives client requests and forwards them to the appropriate server, then returns the server's responses to the clients.
 
@@ -714,7 +714,7 @@ In azure if you want to make a container you first need to have a resource group
 
 Redundancy - in case of disaster you can take back up copies. Redundancy is the inclusion of extra components which may be needed if necessery.
 
-Advantages:
+### Advantages:
 
 * Cost Effective 
 * Scalability
