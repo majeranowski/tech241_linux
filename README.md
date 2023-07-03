@@ -603,7 +603,7 @@ Overall, a reverse proxy is specifically designed to handle client requests on b
 ![reverse-proxy](IMG_0897.jpg)
 
 
-* How Do you setup nginx reverse proxy
+## How Do you setup nginx reverse proxy:
 
 - Install Nginx on your Windows or Linux server (prerequisite).
 - Add the Nginx proxy_pass setting in a virtual host or the default config file.
@@ -704,6 +704,8 @@ Whenever your script has worked, just ceck manually the files you were editing e
 
 # Blobs
 
+## Blob storage:
+
 Blob storage is not hierarchial. It is a place where you can 'dump' everything. Whatever you want to put there. It is not organized. This place is like a container.
 
 It is a type of cloud storage service provided by many cloud computing platforms. It is designed to store and manage unstructured data.
@@ -718,7 +720,7 @@ Advantages:
 * Scalability
 * Durability and Redundancy
 
-Different tiers:
+## Different tiers:
 
 * Hot Access Tier: The Hot Access Tier is designed for frequently accessed data and provides the highest availability and lowest latency. It offers higher storage costs compared to other tiers but provides optimal performance for applications that require real-time access to data. It is suitable for scenarios like active workloads, streaming, and frequently accessed data sets.
 
@@ -727,7 +729,7 @@ Different tiers:
 * Archive Access Tier: The Archive Access Tier is the most cost-effective option and is designed for rarely accessed data with long retention periods. It offers the lowest storage costs but with higher data retrieval costs and longer retrieval times. The Archive tier is suitable for scenarios where data is stored for compliance, regulatory, or legal purposes, and infrequent access is expected.
 
 
-# Types of redundancy
+## Types of redundancy
 
 * Locally Redundant Storage (LRS): LRS makes multiple synchronous copies of your data within a single storage scale unit. It ensures high durability and availability within a data center. However, it does not replicate data across multiple data centers, making it susceptible to regional failures.
 
@@ -755,7 +757,7 @@ Blob storage and file systems, such as the ones used in Linux, Windows, and Mac,
   - Blob storage: blob storage is a flat storage system where data is organized as a collection of binary large objects (BLOBs). No Hierarchy
   - File System: Hierarchical, organized data into tree-like structure.
 
-## AZURE CLI (Command Line Interface)
+# AZURE CLI (Command Line Interface)
 
 `az  login` - to login
 
